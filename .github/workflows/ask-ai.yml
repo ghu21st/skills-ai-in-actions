@@ -29,13 +29,15 @@ jobs:
           # The client will automatically read global env
           client = OpenAI()
 
+          messages = [
+              {"role": "system", "content": "You are a helpful assistant."},
+              {"role": "user", "content": "Hello, please provide a programmer joke"}
+          ]
+
           try: 
               response = client.chat.completions.create(
-                  model="gemini-1.5-flash",  # Highly capable, lightning-fast free tier model
-                  message=[
-                      {"role": "system", "content": "You are a helpful assistant running inside a GitHub Action."},
-                      {"role": "user", "content": "Hello, please provide a programmer joke at here"}
-                  ]
+                  model="gemini-1.5-flash",  
+                  messages=messages
               )
               print("AI response:\n", response.choices[0].message.content)
           except Exception as e:
