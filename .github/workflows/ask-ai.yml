@@ -19,7 +19,8 @@ jobs:
       - name: Run Script with Free AI Endpoint
         env:
           # Google AI Studio OpenAI - compatible variabales
-          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+          #OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
           OPENAI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python - << 'EOF'
