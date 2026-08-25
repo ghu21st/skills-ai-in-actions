@@ -40,7 +40,16 @@ jobs:
                   model="gemini-3.6-flash",  
                   messages=messages
               )
-              print("AI response:\n", response.choices[0].message.content)
+              output_msg = response.choices[0].message.content
+              
+              # standard logging
+              print("AI response:\n", output_msg)
+
+              # Write to GitHub summary dashboard file
+              summary_file = os.environ.get('GITHUB_STEP_SUMMARY')
+              if summary_file: 
+                  with open(summary_file, 'a') as f: 
+                      f.write(f"*** AI generated response\n{output_msg}\n")
           except Exception as e:
               print(f"Error calling AI API: {e}")
               exit(1)
