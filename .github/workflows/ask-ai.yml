@@ -2,25 +2,48 @@ name: Ask AI
 on: 
   workflow_dispatch:
 
-permissions: 
-  models: read
-
 jobs:
   ask-ai:
     runs-on: ubuntu-latest
 
     steps:
-      - name: AI Inference
-        id: ai-response
-        uses: actions/ai-inference@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            Give me a programming joke. 
-      
-      - name: Display AI Response
+          python-version: '3.10'
+          
+      - name: Install Dependencies
         run: |
-          echo "## AI response GGHH test" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.ai-response.outputs.response }}" >> $GITHUB_STEP_SUMMARY
+          pip install openai
+
+      - name: Run Script with Free AI Endpoint
+        env:
+          # Google AI Studio OpenAI - compatible variabales
+          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+          OPENAI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python - << 'EOF'
+          import os
+          from openai import OpenAI
+
+          # The client will automatically read global env
+          client = OpenAI()
+
+          try: 
+              response = client.chat.completions.create(
+                  model="gemini-1.5-flash",  # Highly capable, lightning-fast free tier model
+                  message=[
+                      {"role": "system", "content": "You are a helpful assistant running inside a GitHub Action."},
+                      {"role": "user", "content": "Hello, please provide a programmer joke at here"}
+                  ]
+              )
+              print("AI response:\n", response.choices[0].message.content)
+          except Exception as e:
+              print(f"Error calling AI API: {e}")
+              exit(1)
+          EOF
+                  
+          
+          
+          
           
